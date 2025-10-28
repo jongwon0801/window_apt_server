@@ -1,0 +1,142 @@
+<div ng-controller="AppleboxListCtrl">
+  <!-- 페이지 헤더 -->
+  <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+      <h2>설치 목록</h2>
+      <ol class="breadcrumb">
+        <li>보관함</li>
+        <li class="active"><strong>설치 목록</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 본문 (로그인 시) -->
+  <div class="wrapper wrapper-content animated fadeInRight ecommerce" ng-if="currentUser">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ibox">
+          <!-- 상단 버튼 -->
+          <div class="ibox-title">
+            <h5>설치 목록</h5>
+            <div class="ibox-tools">
+              <a ui-sref="applebox.detail({ yid: '' })" class="btn btn-primary btn-sm">락커 등록</a>
+              <a ui-sref="applebox.edit({ yid: '' })" class="btn btn-primary btn-sm">보관함 등록</a>
+            </div>
+          </div>
+
+          <!-- 검색 폼 -->
+          <div class="ibox-content">
+            <form class="form-inline search-form" ng-submit="filterList();">
+              <input type="text" ng-model="keyword" placeholder="위치 또는 YID 검색" class="form-control" />
+              <button type="submit" class="btn btn-primary">검색</button>
+            </form>
+          </div>
+
+          <!-- 설치 목록 테이블 -->
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>yid</th>
+                  <th>위치</th>
+                  <th>락커설정</th>
+                  <th>락커현황</th>
+                  <th>로그</th>
+                  <th>영상</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in pagedList">
+                  <td>
+                    <a ui-sref="applebox.status({yid:item.yid})">{{item.yid}}</a>
+                  </td>
+                  <td>
+                    <a ui-sref="applebox.edit(item)">{{item.location}}</a>
+                  </td>
+                  <td><a ui-sref="applebox.setting(item)">설정</a></td>
+                  <td><a ui-sref="applebox.view(item)">현황</a></td>
+                  <td>
+                    <a ui-sref="applebox.saveloglist({yid:item.yid})">보관</a>,
+                    <a ui-sref="applebox.takeloglist({yid:item.yid})">수령</a>
+                  </td>
+                  <td>
+                    <input type="button" ng-click="camera(item)" value="관제" />
+                  </td>
+                </tr>
+                <tr ng-if="pagedList.length === 0">
+                  <td colspan="6" class="text-center">
+                    더 이상 데이터가 없습니다.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 페이지네이션 -->
+          <div class="pagination">
+            <button class="btn btn-sm btn-default" ng-click="goPage(currentPage-1)">
+              이전
+            </button>
+            <span>{{currentPage}} / {{totalPages}}</span>
+            <button class="btn btn-sm btn-default" ng-click="goPage(currentPage+1)">
+              다음
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 로그인 안 됨 -->
+  <div class="text-center" ng-if="!currentUser" style="margin-top: 50px">
+    <h3>로그인이 필요합니다.</h3>
+    <a href="#/login" class="btn btn-primary">로그인 페이지로 이동</a>
+  </div>
+</div>
+
+<!-- 스타일 -->
+<style>
+  .wrapper-content {
+    min-height: 100vh;
+    background-color: #fff;
+    padding: 15px;
+  }
+
+  .wrapper-content .row,
+  .wrapper-content .col-lg-12 {
+    background-color: inherit;
+  }
+
+  /* 검색 폼 */
+  .search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  /* 페이지네이션 중앙 고정 + 클릭 시 파란 테두리 제거 */
+  .pagination {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .pagination .btn {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .pagination .btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+</style>
